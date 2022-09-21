@@ -113,6 +113,8 @@ export async function run() {
         await sleep(1000)
 
         console.debug("Entering main loop")
+        core.setOutput('UPTERM_INFO', await execShellCommand('bash -c "upterm session current --admin-socket ~/.upterm/*.sock"'));
+
         while (true) {
             try {
                 core.info(await execShellCommand('bash -c "upterm session current --admin-socket ~/.upterm/*.sock"'));
@@ -121,12 +123,12 @@ export async function run() {
                 break
             }
 
-            const skip = fs.existsSync("/continue") || fs.existsSync(path.join(process.env.GITHUB_WORKSPACE, "continue"))
-            if (skip) {
-                core.info("Exiting debugging session because '/continue' file was created")
-                break
-            }
-            await sleep(30000)
+            // const skip = fs.existsSync("/continue") || fs.existsSync(path.join(process.env.GITHUB_WORKSPACE, "continue"))
+            // if (skip) {
+            //     core.info("Exiting debugging session because '/continue' file was created")
+            //     break
+            // }
+            await sleep(10000)
         }
     } catch (error) {
         core.setFailed(error.message);
@@ -134,19 +136,3 @@ export async function run() {
 }
 
 run();
-
-// const core = require('@actions/core');
-// const github = require('@actions/github');
-
-// try {
-//     // `who-to-greet` input defined in action metadata file
-//     const nameToGreet = core.getInput('who-to-greet');
-//     console.log(`Hello ${nameToGreet}!`);
-//     const time = (new Date()).toTimeString();
-//     core.setOutput("time", time);
-//     // Get the JSON webhook payload for the event that triggered the workflow
-//     const payload = JSON.stringify(github.context.payload, undefined, 2)
-//     console.log(`The event payload: ${payload}`);
-// } catch (error) {
-//     core.setFailed(error.message);
-// }
